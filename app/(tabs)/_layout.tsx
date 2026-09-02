@@ -15,8 +15,8 @@ export default function TabLayout() {
         tabBarStyle: [
           styles.tabBar,
           {
-            height: isIOS ? 92 : isWeb ? 78 : 74,
-            paddingBottom: isIOS ? 30 : isWeb ? 14 : 12,
+            height: isIOS ? 98 : isWeb ? 88 : 84,
+            paddingBottom: isIOS ? 36 : isWeb ? 24 : 20,
             paddingTop: 8,
           },
         ],
@@ -73,11 +73,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderTopColor: COLORS.borderDark,
     borderTopWidth: 1,
-    elevation: 8,
+    elevation: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
   },
   tabItem: {
     justifyContent: 'center',
@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   tabIcon: {
-    marginTop: 0,
+    marginTop: 2,
     marginBottom: 2,
   },
   tabLabel: {
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 0.2,
-    marginTop: 1,
-    paddingBottom: 2,
+    marginTop: 2,
+    marginBottom: 2,
   },
 });
