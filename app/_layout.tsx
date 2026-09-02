@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { COLORS } from '../src/constants/theme';
 import { AudioService } from '../src/services/audioService';
 import { useUserStore } from '../src/store/useUserStore';
@@ -16,27 +17,29 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <View style={styles.outerContainer}>
-      <StatusBar style="light" />
-      <View style={styles.responsiveShell}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: COLORS.background },
-            animation: 'fade',
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="workout/[id]"
-            options={{
-              presentation: 'modal',
+    <SafeAreaProvider>
+      <View style={styles.outerContainer}>
+        <StatusBar style="light" />
+        <View style={styles.responsiveShell}>
+          <Stack
+            screenOptions={{
               headerShown: false,
+              contentStyle: { backgroundColor: COLORS.background },
+              animation: 'fade',
             }}
-          />
-        </Stack>
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="workout/[id]"
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </View>
       </View>
-    </View>
+    </SafeAreaProvider>
   );
 }
 

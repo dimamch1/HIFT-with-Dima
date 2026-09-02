@@ -1,67 +1,126 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../../src/constants/theme';
 import { Flame, Timer as TimerIcon, Trophy, User } from 'lucide-react-native';
+import { HapticsService } from '../../src/services/hapticsService';
 
-export default function TabLayout() {
-  const isWeb = Platform.OS === 'web';
+interface CustomTabBarProps {
+  state: {
+    index: number;
+    routes: { key: string; name: string; params?: unknown }[];
+  };
+  descriptors: Record<
+    string,
+    {
+      options: {
+        title?: string;
+        tabBarLabel?: string;
+        tabBarAccessibilityLabel?: string;
+      };
+    }
+  >;
+  navigation: {
+    emit: (event: { type: string; target: string; canPreventDefault?: boolean }) => { defaultPrevented: boolean };
+    navigate: (name: string, params?: unknown) => void;
+  };
+}
+
+function CustomBottomTabBar({ state, descriptors, navigation }: CustomTabBarProps) {
+  const insets = useSafeAreaInsets();
   const isIOS = Platform.OS === 'ios';
 
+  // Dynamic bottom padding for safe area / browser bars
+  const bottomInset = Math.max(insets.bottom, isIOS ? 24 : 10);
+
+  return (
+    <View style={[styles.tabBarContainer, { paddingBottom: bottomInset }]}>
+      <View style={styles.tabBarRow}>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const isFocused = state.index === index;
+          const color = isFocused ? COLORS.neonLime : COLORS.textMuted;
+          const label = options.title !== undefined ? options.title : route.name;
+
+          let Icon = Flame;
+          if (route.name === 'timer') Icon = TimerIcon;
+          else if (route.name === 'benchmarks') Icon = Trophy;
+          else if (route.name === 'profile') Icon = User;
+
+          const onPress = () => {
+            HapticsService.countdownTick();
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          return (
+            <TouchableOpacity
+              key={route.key}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              onPress={onPress}
+              style={styles.tabButton}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.iconWrapper, isFocused && styles.iconWrapperActive]}>
+                <Icon size={22} color={color} strokeWidth={isFocused ? 2.5 : 2} />
+              </View>
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.tabLabel,
+                  { color, fontWeight: isFocused ? '900' : '700' },
+                ]}
+              >
+                {label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+export default function TabLayout() {
   return (
     <Tabs
+      tabBar={(props) => <CustomBottomTabBar {...(props as CustomTabBarProps)} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: [
-          styles.tabBar,
-          {
-            height: isIOS ? 98 : isWeb ? 88 : 84,
-            paddingBottom: isIOS ? 36 : isWeb ? 24 : 20,
-            paddingTop: 8,
-          },
-        ],
-        tabBarActiveTintColor: COLORS.neonLime,
-        tabBarInactiveTintColor: COLORS.textMuted,
-        tabBarLabelStyle: styles.tabLabel,
-        tabBarItemStyle: styles.tabItem,
-        tabBarIconStyle: styles.tabIcon,
-        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
         name="today"
         options={{
           title: 'Daily WOD',
-          tabBarIcon: ({ color, focused }) => (
-            <Flame size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
-          ),
         }}
       />
       <Tabs.Screen
         name="timer"
         options={{
           title: 'Timer Suite',
-          tabBarIcon: ({ color, focused }) => (
-            <TimerIcon size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
-          ),
         }}
       />
       <Tabs.Screen
         name="benchmarks"
         options={{
           title: 'Benchmarks',
-          tabBarIcon: ({ color, focused }) => (
-            <Trophy size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
-          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Athlete Hub',
-          tabBarIcon: ({ color, focused }) => (
-            <User size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
-          ),
         }}
       />
     </Tabs>
@@ -69,30 +128,41 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
+  tabBarContainer: {
     backgroundColor: COLORS.surface,
     borderTopColor: COLORS.borderDark,
     borderTopWidth: 1,
-    elevation: 12,
+    paddingTop: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.35,
     shadowRadius: 6,
+    elevation: 12,
   },
-  tabItem: {
-    justifyContent: 'center',
+  tabBarRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
+    height: 52,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 2,
   },
-  tabIcon: {
-    marginTop: 2,
-    marginBottom: 2,
+  iconWrapper: {
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapperActive: {
+    transform: [{ scale: 1.05 }],
   },
   tabLabel: {
     fontSize: 11,
-    fontWeight: '800',
     letterSpacing: 0.2,
     marginTop: 2,
-    marginBottom: 2,
+    textAlign: 'center',
   },
 });
