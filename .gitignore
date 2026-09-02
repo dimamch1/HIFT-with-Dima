@@ -1,7 +1,43 @@
+# Dependencies
 node_modules/
-.expo/
+.pnpm-store/
+
+# Production builds & exports
 dist/
 web-build/
+
+# Expo temporary files & local caches
+.expo/
+.expo-shared/
 expo-env.d.ts
-.DS_Store
+
+# Environment variables & secrets (keep .env.example)
+.env
+.env.local
+.env.*.local
+
+# Native builds & keystores
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Temporary / Zip archives
+*.zip
+*.tar.gz
