@@ -1,19 +1,31 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { View, StyleSheet, Platform } from 'react-native';
-import { COLORS, SPACING } from '../../src/constants/theme';
+import { StyleSheet, Platform } from 'react-native';
+import { COLORS } from '../../src/constants/theme';
 import { Flame, Timer as TimerIcon, Trophy, User } from 'lucide-react-native';
 
 export default function TabLayout() {
+  const isWeb = Platform.OS === 'web';
+  const isIOS = Platform.OS === 'ios';
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: isIOS ? 92 : isWeb ? 78 : 74,
+            paddingBottom: isIOS ? 30 : isWeb ? 14 : 12,
+            paddingTop: 8,
+          },
+        ],
         tabBarActiveTintColor: COLORS.neonLime,
         tabBarInactiveTintColor: COLORS.textMuted,
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
+        tabBarIconStyle: styles.tabIcon,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
@@ -61,16 +73,26 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderTopColor: COLORS.borderDark,
     borderTopWidth: 1,
-    height: Platform.OS === 'ios' ? 88 : 68,
-    paddingBottom: Platform.OS === 'ios' ? 28 : 10,
-    paddingTop: 8,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   tabItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 2,
+  },
+  tabIcon: {
+    marginTop: 0,
+    marginBottom: 2,
   },
   tabLabel: {
     fontSize: 11,
     fontWeight: '800',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
+    marginTop: 1,
+    paddingBottom: 2,
   },
 });
