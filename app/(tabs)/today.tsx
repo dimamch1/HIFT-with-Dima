@@ -5,9 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { COLORS, RADIUS, SPACING } from '../../src/constants/theme';
 import { useUserStore } from '../../src/store/useUserStore';

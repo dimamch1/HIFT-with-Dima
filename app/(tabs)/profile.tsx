@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   Modal,
@@ -14,6 +13,7 @@ import {
   Keyboard,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, RADIUS, SPACING } from '../../src/constants/theme';
 import { useUserStore } from '../../src/store/useUserStore';
 import { useWorkoutStore } from '../../src/store/useWorkoutStore';

@@ -30,9 +30,12 @@ interface CustomTabBarProps {
 function CustomBottomTabBar({ state, descriptors, navigation }: CustomTabBarProps) {
   const insets = useSafeAreaInsets();
   const isIOS = Platform.OS === 'ios';
+  const isWeb = Platform.OS === 'web';
 
-  // Dynamic bottom padding for safe area / browser bars
-  const bottomInset = Math.max(insets.bottom, isIOS ? 24 : 10);
+  // Generous bottom inset for Safari / Chrome mobile toolbars and iOS home bar
+  const bottomInset = isWeb
+    ? Math.max(insets.bottom, 28)
+    : Math.max(insets.bottom, isIOS ? 28 : 12);
 
   return (
     <View style={[styles.tabBarContainer, { paddingBottom: bottomInset }]}>
@@ -132,17 +135,19 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderTopColor: COLORS.borderDark,
     borderTopWidth: 1,
-    paddingTop: 6,
+    paddingTop: 8,
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.35,
     shadowRadius: 6,
-    elevation: 12,
+    elevation: 16,
   },
   tabBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    width: '100%',
     height: 52,
   },
   tabButton: {
@@ -150,6 +155,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 2,
+    minWidth: 0,
   },
   iconWrapper: {
     height: 28,

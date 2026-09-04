@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { COLORS } from '../src/constants/theme';
 import { AudioService } from '../src/services/audioService';
@@ -46,6 +46,8 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
@@ -53,12 +55,17 @@ const styles = StyleSheet.create({
   responsiveShell: {
     flex: 1,
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 540,
+    height: '100%',
     backgroundColor: COLORS.background,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
+    ...(Platform.OS === 'web'
+      ? {
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.6,
+          shadowRadius: 24,
+        }
+      : {}),
   },
 });

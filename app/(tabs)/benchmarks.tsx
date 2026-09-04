@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   Modal,
@@ -13,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { COLORS, RADIUS, SPACING } from '../../src/constants/theme';
 import { ICONIC_BENCHMARKS } from '../../src/constants/benchmarks';

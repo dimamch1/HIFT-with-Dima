@@ -38,6 +38,8 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# Temporary / Zip archives
+# Temporary / Zip archives & raw training docx
 *.zip
 *.tar.gz
+training/
+*.ps1
