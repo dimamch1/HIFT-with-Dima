@@ -168,7 +168,15 @@ export default function TodayScreen() {
           </View>
         </View>
 
-        <View style={styles.topBarSide} />
+        <TouchableOpacity
+          style={[styles.topBarSide, { alignItems: 'flex-end' }]}
+          onPress={() => router.push('/(tabs)/profile')}
+          activeOpacity={0.8}
+        >
+          <View style={styles.athleteAvatarBadge}>
+            <Text style={styles.athleteAvatarInitial}>{user.name.charAt(0).toUpperCase()}</Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -462,5 +470,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     textAlign: 'center',
+  },
+  athleteAvatarBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.surfaceElevated,
+    borderWidth: 1.5,
+    borderColor: COLORS.cyanElectric,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  athleteAvatarInitial: {
+    color: COLORS.cyanElectric,
+    fontSize: 12,
+    fontWeight: '900',
   },
 });
