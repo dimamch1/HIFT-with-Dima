@@ -108,6 +108,7 @@ export const OneRMManager: React.FC<OneRMManagerProps> = ({
                   onEndEditing={() => handleSave(lift.key)}
                   onSubmitEditing={() => handleSave(lift.key)}
                   keyboardType="decimal-pad"
+                  inputMode="decimal"
                   returnKeyType="done"
                   blurOnSubmit={true}
                   style={[styles.directInput, isFocused && styles.directInputFocused]}
@@ -210,7 +211,8 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 8 : 6,
     paddingHorizontal: 4,
     minHeight: 40,
-  },
+    ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}),
+  } as any,
   directInputFocused: {
     color: COLORS.neonLime,
   },

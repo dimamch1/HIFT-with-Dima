@@ -346,69 +346,72 @@ export default function BenchmarksScreen() {
         )}
       </ScrollView>
 
-      {/* Record PR Modal with Keyboard Avoiding View */}
-      <Modal visible={showLogModal} transparent animationType="fade" onRequestClose={() => setShowLogModal(false)}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalOverlay}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoidContainer}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
-            >
-              <View style={styles.prModal}>
-                <View style={styles.modalHeader}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.modalTitle}>Record Benchmark PR</Text>
-                    <Text style={styles.modalSubtitle} numberOfLines={1}>{selectedBenchmark?.name}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      HapticsService.countdownTick();
-                      setShowLogModal(false);
-                    }}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <X size={20} color={COLORS.textSecondary} />
-                  </TouchableOpacity>
+      {/* 📝 Log Benchmark PR Modal */}
+      <Modal visible={showLogModal} transparent animationType="slide" onRequestClose={() => setShowLogModal(false)}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardAvoidContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+          >
+            <View style={styles.prModal}>
+              <View style={styles.modalHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.modalTitle}>Record Benchmark PR</Text>
+                  <Text style={styles.modalSubtitle} numberOfLines={1}>{selectedBenchmark?.name}</Text>
                 </View>
-
-                <Text style={styles.inputLabel}>
-                  Score ({selectedBenchmark?.format === 'FOR_TIME' || selectedBenchmark?.format === 'CHIPPER' ? 'e.g. 03:45' : 'e.g. 24 Rounds + 5 Reps'}):
-                </Text>
-                <TextInput
-                  value={newPrScore}
-                  onChangeText={setNewPrScore}
-                  placeholder={selectedBenchmark?.format === 'FOR_TIME' || selectedBenchmark?.format === 'CHIPPER' ? '03:45' : '22 Rds'}
-                  placeholderTextColor={COLORS.textMuted}
-                  style={styles.prInput}
-                  autoFocus
-                  returnKeyType="next"
-                  selectTextOnFocus
-                />
-
-                <Text style={styles.inputLabel}>Tactical Notes & Conditions:</Text>
-                <TextInput
-                  value={newPrNotes}
-                  onChangeText={setNewPrNotes}
-                  placeholder="e.g. Unbroken thrusters, butterfly pull-ups..."
-                  placeholderTextColor={COLORS.textMuted}
-                  style={[styles.prInput, styles.notesInputArea]}
-                  multiline
-                  returnKeyType="done"
-                  blurOnSubmit={true}
-                />
-
-                <Button
-                  title="Save Benchmark Record"
-                  variant="primary"
-                  size="lg"
-                  onPress={handleSavePR}
-                  style={styles.savePrBtn}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    HapticsService.countdownTick();
+                    setShowLogModal(false);
+                  }}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <X size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
               </View>
-            </KeyboardAvoidingView>
-          </View>
-        </TouchableWithoutFeedback>
+
+              <Text style={styles.inputLabel}>
+                Score ({selectedBenchmark?.format === 'FOR_TIME' || selectedBenchmark?.format === 'CHIPPER' ? 'e.g. 03:45' : 'e.g. 24 Rounds + 5 Reps'}):
+              </Text>
+              <TextInput
+                value={newPrScore}
+                onChangeText={setNewPrScore}
+                placeholder={selectedBenchmark?.format === 'FOR_TIME' || selectedBenchmark?.format === 'CHIPPER' ? '03:45' : '22 Rds'}
+                placeholderTextColor={COLORS.textMuted}
+                style={styles.prInput}
+                inputMode="text"
+                returnKeyType="next"
+                selectTextOnFocus
+              />
+
+              <Text style={styles.inputLabel}>Tactical Notes & Conditions:</Text>
+              <TextInput
+                value={newPrNotes}
+                onChangeText={setNewPrNotes}
+                placeholder="e.g. Unbroken thrusters, butterfly pull-ups..."
+                placeholderTextColor={COLORS.textMuted}
+                style={[styles.prInput, styles.notesInputArea]}
+                inputMode="text"
+                multiline
+                returnKeyType="done"
+                blurOnSubmit={true}
+              />
+
+              <Button
+                title="Save Benchmark Record"
+                variant="primary"
+                size="lg"
+                onPress={handleSavePR}
+                style={styles.savePrBtn}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -686,6 +689,7 @@ const styles = StyleSheet.create({
     padding: SPACING.xl,
     borderWidth: 1,
     borderColor: COLORS.border,
+    zIndex: 10,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -720,7 +724,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     borderWidth: 1,
     borderColor: COLORS.borderDark,
-  },
+    ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}),
+  } as any,
   notesInputArea: {
     height: 70,
     textAlignVertical: 'top',

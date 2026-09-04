@@ -65,6 +65,7 @@ export default function TimerScreen() {
   const [showLogScoreModal, setShowLogScoreModal] = useState(false);
   const [logRpe, setLogRpe] = useState(8);
   const [logNotes, setLogNotes] = useState('');
+  const [isRxLog, setIsRxLog] = useState(true);
   const [isWodCollapsed, setIsWodCollapsed] = useState(false);
 
   const isIdle = state.status === 'IDLE';
@@ -105,7 +106,7 @@ export default function TimerScreen() {
         roundsCompleted: state.amrapRounds,
         repsCompleted: state.amrapReps,
         timeTakenSeconds: state.elapsedSeconds,
-        isRx: true,
+        isRx: isRxLog,
         rpe: logRpe,
         notes: logNotes,
         recordedPlanes: ['MONOSTRUCTURAL', 'KNEE_FLEXION', 'VERTICAL_PULL'],
@@ -508,87 +509,134 @@ export default function TimerScreen() {
         )}
       </ScrollView>
 
-      {/* Post-Workout Score Logging Modal with Keyboard Avoiding View */}
+      {/* Post-Workout Score Logging Modal */}
       <Modal visible={showLogScoreModal} transparent animationType="slide" onRequestClose={() => setShowLogScoreModal(false)}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalOverlay}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoidContainer}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
-            >
-              <View style={styles.logModal}>
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalTitle}>Log Workout Score</Text>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardAvoidContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+          >
+            <View style={styles.logModal}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Log Workout Score</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    HapticsService.countdownTick();
+                    setShowLogScoreModal(false);
+                  }}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <X size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Score summary */}
+              <Text style={styles.scoreLabel}>Final Result:</Text>
+              <Text style={styles.finalScoreDigits}>
+                {state.config.mode === 'FOR_TIME'
+                  ? `${Math.floor(state.elapsedSeconds / 60)}:${state.elapsedSeconds % 60 < 10 ? '0' : ''}${state.elapsedSeconds % 60}`
+                  : `${state.amrapRounds} Rounds + ${state.amrapReps} Reps`}
+              </Text>
+
+              {/* Rx / Scaled Toggle */}
+              <View style={styles.divisionToggleRow}>
+                <TouchableOpacity
+                  onPress={() => {
+                    HapticsService.countdownTick();
+                    setIsRxLog(true);
+                  }}
+                  style={[
+                    styles.divisionToggleBtn,
+                    isRxLog && styles.divisionToggleBtnActiveRx,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.divisionToggleText,
+                      isRxLog && styles.divisionToggleTextActive,
+                    ]}
+                  >
+                    Rx (Prescribed)
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    HapticsService.countdownTick();
+                    setIsRxLog(false);
+                  }}
+                  style={[
+                    styles.divisionToggleBtn,
+                    !isRxLog && styles.divisionToggleBtnActiveScaled,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.divisionToggleText,
+                      !isRxLog && styles.divisionToggleTextActive,
+                    ]}
+                  >
+                    Scaled / Modified
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* RPE Exertion Rating */}
+              <Text style={styles.rpeLabel}>Rate of Perceived Exertion (RPE: {logRpe}/10):</Text>
+              <View style={styles.rpeRow}>
+                {[6, 7, 8, 9, 10].map((num) => (
                   <TouchableOpacity
+                    key={num}
                     onPress={() => {
                       HapticsService.countdownTick();
-                      setShowLogScoreModal(false);
+                      setLogRpe(num);
                     }}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    style={[
+                      styles.rpeChip,
+                      logRpe === num && styles.rpeChipActive,
+                    ]}
                   >
-                    <X size={20} color={COLORS.textSecondary} />
-                  </TouchableOpacity>
-                </View>
-
-                <Text style={styles.scoreLabel}>Final Result:</Text>
-                <Text style={styles.finalScoreDigits}>
-                  {state.config.mode === 'FOR_TIME'
-                    ? `${Math.floor(state.elapsedSeconds / 60)}:${state.elapsedSeconds % 60 < 10 ? '0' : ''}${state.elapsedSeconds % 60}`
-                    : `${state.amrapRounds} Rounds + ${state.amrapReps} Reps`}
-                </Text>
-
-                {/* RPE Exertion Rating */}
-                <Text style={styles.rpeLabel}>Rate of Perceived Exertion (RPE: {logRpe}/10):</Text>
-                <View style={styles.rpeRow}>
-                  {[6, 7, 8, 9, 10].map((num) => (
-                    <TouchableOpacity
-                      key={num}
-                      onPress={() => {
-                        HapticsService.countdownTick();
-                        setLogRpe(num);
-                      }}
+                    <Text
                       style={[
-                        styles.rpeChip,
-                        logRpe === num && styles.rpeChipActive,
+                        styles.rpeChipText,
+                        logRpe === num && styles.rpeChipTextActive,
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.rpeChipText,
-                          logRpe === num && styles.rpeChipTextActive,
-                        ]}
-                      >
-                        {num}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                {/* Athlete Notes */}
-                <Text style={styles.notesLabel}>Notes & Pacing Feedback:</Text>
-                <TextInput
-                  value={logNotes}
-                  onChangeText={setLogNotes}
-                  placeholder="e.g. Unbroken thrusters, felt fast in round 2..."
-                  placeholderTextColor={COLORS.textMuted}
-                  style={styles.notesInput}
-                  multiline
-                  returnKeyType="done"
-                  blurOnSubmit={true}
-                />
-
-                <Button
-                  title="Save to Training Journal"
-                  variant="primary"
-                  size="lg"
-                  onPress={handleSaveLog}
-                  style={styles.saveLogBtn}
-                />
+                      {num}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
               </View>
-            </KeyboardAvoidingView>
-          </View>
-        </TouchableWithoutFeedback>
+
+              {/* Athlete Notes */}
+              <Text style={styles.notesLabel}>Notes & Pacing Feedback:</Text>
+              <TextInput
+                value={logNotes}
+                onChangeText={setLogNotes}
+                placeholder="e.g. Unbroken thrusters, felt fast in round 2..."
+                placeholderTextColor={COLORS.textMuted}
+                style={styles.notesInput}
+                inputMode="text"
+                multiline
+                returnKeyType="done"
+                blurOnSubmit={true}
+              />
+
+              <Button
+                title="Save to Training Journal"
+                variant="primary"
+                size="lg"
+                onPress={handleSaveLog}
+                style={styles.saveLogBtn}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -922,6 +970,37 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginVertical: SPACING.xs,
   },
+  divisionToggleRow: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginVertical: SPACING.sm,
+  },
+  divisionToggleBtn: {
+    flex: 1,
+    paddingVertical: SPACING.sm + 2,
+    borderRadius: RADIUS.md,
+    alignItems: 'center',
+    backgroundColor: COLORS.surfaceElevated,
+    borderWidth: 1,
+    borderColor: COLORS.borderDark,
+  },
+  divisionToggleBtnActiveRx: {
+    backgroundColor: 'rgba(204, 255, 0, 0.15)',
+    borderColor: COLORS.neonLime,
+  },
+  divisionToggleBtnActiveScaled: {
+    backgroundColor: 'rgba(0, 229, 255, 0.15)',
+    borderColor: COLORS.cyanElectric,
+  },
+  divisionToggleText: {
+    color: COLORS.textSecondary,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  divisionToggleTextActive: {
+    color: COLORS.textPrimary,
+    fontWeight: '900',
+  },
   rpeLabel: {
     color: COLORS.textSecondary,
     fontSize: 13,
@@ -971,7 +1050,8 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderWidth: 1,
     borderColor: COLORS.borderDark,
-  },
+    ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}),
+  } as any,
   saveLogBtn: {
     marginTop: SPACING.lg,
   },

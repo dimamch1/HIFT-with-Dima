@@ -417,137 +417,138 @@ export default function ProfileScreen() {
         animationType="fade"
         onRequestClose={() => setShowAthleteMenuModal(false)}
       >
-        <TouchableWithoutFeedback onPress={() => setShowAthleteMenuModal(false)}>
-          <View style={styles.drawerOverlay}>
-            <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-              <View style={styles.drawerContainer}>
-                {/* Drawer Header */}
-                <View style={styles.drawerHeader}>
-                  <View style={styles.drawerHeaderLeft}>
-                    <Menu size={20} color={COLORS.neonLime} />
-                    <Text style={styles.drawerTitle}>Athlete Profiles</Text>
-                    <View style={styles.drawerBadge}>
-                      <Text style={styles.drawerBadgeText}>{profiles.length}</Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setShowAthleteMenuModal(false)}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    style={styles.closeDrawerBtn}
-                  >
-                    <X size={20} color={COLORS.textSecondary} />
-                  </TouchableOpacity>
+        <View style={styles.drawerOverlay}>
+          <TouchableWithoutFeedback onPress={() => setShowAthleteMenuModal(false)}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
+
+          <View style={styles.drawerContainer}>
+            {/* Drawer Header */}
+            <View style={styles.drawerHeader}>
+              <View style={styles.drawerHeaderLeft}>
+                <Menu size={20} color={COLORS.neonLime} />
+                <Text style={styles.drawerTitle}>Athlete Profiles</Text>
+                <View style={styles.drawerBadge}>
+                  <Text style={styles.drawerBadgeText}>{profiles.length}</Text>
                 </View>
-
-                <Text style={styles.drawerSubtitle}>
-                  Select an athlete to instantly switch 1RMs, skills & customized Daily WOD:
-                </Text>
-
-                {/* Profiles List */}
-                <ScrollView
-                  style={styles.drawerList}
-                  showsVerticalScrollIndicator={false}
-                >
-                  {profiles.map((p) => {
-                    const isActive = p.id === activeProfileId;
-
-                    return (
-                      <TouchableOpacity
-                        key={p.id}
-                        onPress={() => {
-                          if (!isActive) {
-                            HapticsService.roundIncrement();
-                            switchProfile(p.id);
-                            setShowAthleteMenuModal(false);
-                            triggerSaveFeedback();
-                          } else {
-                            setShowAthleteMenuModal(false);
-                          }
-                        }}
-                        style={[
-                          styles.drawerProfileItem,
-                          isActive && styles.drawerProfileItemActive,
-                        ]}
-                        activeOpacity={0.8}
-                      >
-                        {/* Avatar */}
-                        <View
-                          style={[
-                            styles.drawerAvatar,
-                            isActive && styles.drawerAvatarActive,
-                          ]}
-                        >
-                          <Text
-                            style={[
-                              styles.drawerAvatarText,
-                              isActive && styles.drawerAvatarTextActive,
-                            ]}
-                          >
-                            {p.name.charAt(0).toUpperCase()}
-                          </Text>
-                        </View>
-
-                        {/* Info */}
-                        <View style={styles.drawerProfileInfo}>
-                          <View style={styles.drawerNameRow}>
-                            <Text
-                              style={[
-                                styles.drawerProfileName,
-                                isActive && styles.drawerProfileNameActive,
-                              ]}
-                              numberOfLines={1}
-                            >
-                              {p.name}
-                            </Text>
-                            {isActive && (
-                              <View style={styles.activeTag}>
-                                <Text style={styles.activeTagText}>ACTIVE</Text>
-                              </View>
-                            )}
-                          </View>
-                          <Text style={styles.drawerProfileMeta}>
-                            {p.division} • {p.weightKg}kg • {p.heightCm}cm • {p.gender === 'female' ? 'Rx Women' : 'Rx Men'}
-                          </Text>
-                        </View>
-
-                        {/* Action icon */}
-                        {isActive ? (
-                          <View style={styles.drawerActiveIcon}>
-                            <Check size={16} color="#000" strokeWidth={3} />
-                          </View>
-                        ) : (
-                          profiles.length > 1 && (
-                            <TouchableOpacity
-                              onPress={() => handleDeleteAthlete(p)}
-                              style={styles.drawerDeleteBtn}
-                              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                            >
-                              <Trash2 size={16} color={COLORS.textMuted} />
-                            </TouchableOpacity>
-                          )
-                        )}
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-
-                {/* Add Athlete Button */}
-                <TouchableOpacity
-                  onPress={() => {
-                    HapticsService.countdownTick();
-                    setShowAthleteMenuModal(false);
-                    setShowNewAthleteModal(true);
-                  }}
-                  style={styles.drawerAddBtn}
-                  activeOpacity={0.8}
-                >
-                  <Plus size={18} color="#000" />
-                  <Text style={styles.drawerAddBtnText}>Add New Athlete Profile</Text>
-                </TouchableOpacity>
               </View>
-            </TouchableWithoutFeedback>
+              <TouchableOpacity
+                onPress={() => setShowAthleteMenuModal(false)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                style={styles.closeDrawerBtn}
+              >
+                <X size={20} color={COLORS.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.drawerSubtitle}>
+              Select an athlete to instantly switch 1RMs, skills & customized Daily WOD:
+            </Text>
+
+            {/* Profiles List */}
+            <ScrollView
+              style={styles.drawerList}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
+            >
+              {profiles.map((p) => {
+                const isActive = p.id === activeProfileId;
+
+                return (
+                  <TouchableOpacity
+                    key={p.id}
+                    onPress={() => {
+                      if (!isActive) {
+                        HapticsService.roundIncrement();
+                        switchProfile(p.id);
+                        setShowAthleteMenuModal(false);
+                        triggerSaveFeedback();
+                      } else {
+                        setShowAthleteMenuModal(false);
+                      }
+                    }}
+                    style={[
+                      styles.drawerProfileItem,
+                      isActive && styles.drawerProfileItemActive,
+                    ]}
+                    activeOpacity={0.8}
+                  >
+                    {/* Avatar */}
+                    <View
+                      style={[
+                        styles.drawerAvatar,
+                        isActive && styles.drawerAvatarActive,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.drawerAvatarText,
+                          isActive && styles.drawerAvatarTextActive,
+                        ]}
+                      >
+                        {p.name.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+
+                    {/* Info */}
+                    <View style={styles.drawerProfileInfo}>
+                      <View style={styles.drawerNameRow}>
+                        <Text
+                          style={[
+                            styles.drawerProfileName,
+                            isActive && styles.drawerProfileNameActive,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {p.name}
+                        </Text>
+                        {isActive && (
+                          <View style={styles.activeTag}>
+                            <Text style={styles.activeTagText}>ACTIVE</Text>
+                          </View>
+                        )}
+                      </View>
+                      <Text style={styles.drawerProfileMeta}>
+                        {p.division} • {p.weightKg}kg • {p.heightCm}cm • {p.gender === 'female' ? 'Rx Women' : 'Rx Men'}
+                      </Text>
+                    </View>
+
+                    {/* Action icon */}
+                    {isActive ? (
+                      <View style={styles.drawerActiveIcon}>
+                        <Check size={16} color="#000" strokeWidth={3} />
+                      </View>
+                    ) : (
+                      profiles.length > 1 && (
+                        <TouchableOpacity
+                          onPress={() => handleDeleteAthlete(p)}
+                          style={styles.drawerDeleteBtn}
+                          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                        >
+                          <Trash2 size={16} color={COLORS.textMuted} />
+                        </TouchableOpacity>
+                      )
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Add Athlete Button */}
+            <TouchableOpacity
+              onPress={() => {
+                HapticsService.countdownTick();
+                setShowAthleteMenuModal(false);
+                setShowNewAthleteModal(true);
+              }}
+              style={styles.drawerAddBtn}
+              activeOpacity={0.8}
+            >
+              <Plus size={18} color="#000" />
+              <Text style={styles.drawerAddBtnText}>Add New Athlete Profile</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
 
       {/* ➕ Create New Athlete Profile Modal */}
@@ -557,152 +558,158 @@ export default function ProfileScreen() {
         animationType="slide"
         onRequestClose={() => setShowNewAthleteModal(false)}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalOverlay}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoidContainer}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
-            >
-              <View style={styles.editModal}>
-                <View style={styles.modalHeader}>
-                  <View>
-                    <Text style={styles.modalTitle}>Add New Athlete Profile</Text>
-                    <Text style={styles.modalSubtitle}>Create a profile with custom 1RMs & settings</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setShowNewAthleteModal(false)}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <X size={20} color={COLORS.textSecondary} />
-                  </TouchableOpacity>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardAvoidContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+          >
+            <View style={styles.editModal}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Add New Athlete Profile</Text>
+                  <Text style={styles.modalSubtitle}>Create a profile with custom 1RMs & settings</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setShowNewAthleteModal(false)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <X size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="always"
+                bounces={false}
+              >
+                {/* Name */}
+                <Text style={styles.modalInputLabel}>Athlete Name:</Text>
+                <TextInput
+                  value={newName}
+                  onChangeText={setNewName}
+                  placeholder="e.g. Sarah Cohen, Dan Miller..."
+                  placeholderTextColor={COLORS.textMuted}
+                  style={styles.modalInput}
+                  inputMode="text"
+                  returnKeyType="next"
+                  autoCorrect={false}
+                />
+
+                {/* Biological Sex */}
+                <Text style={styles.modalInputLabel}>Biological Sex (Rx Loading baseline):</Text>
+                <View style={styles.genderRow}>
+                  {(['male', 'female'] as Gender[]).map((g) => (
+                    <TouchableOpacity
+                      key={g}
+                      onPress={() => {
+                        HapticsService.countdownTick();
+                        setNewGender(g);
+                      }}
+                      style={[
+                        styles.genderChip,
+                        newGender === g && styles.genderChipActive,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.genderChipText,
+                          newGender === g && styles.genderChipTextActive,
+                        ]}
+                      >
+                        {g === 'male' ? 'Male (Rx Men)' : 'Female (Rx Women)'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
 
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                  bounces={false}
-                >
-                  {/* Name */}
-                  <Text style={styles.modalInputLabel}>Athlete Name:</Text>
-                  <TextInput
-                    value={newName}
-                    onChangeText={setNewName}
-                    placeholder="e.g. Sarah Cohen, Dan Miller..."
-                    placeholderTextColor={COLORS.textMuted}
-                    style={styles.modalInput}
-                    autoFocus
-                    returnKeyType="next"
-                  />
-
-                  {/* Biological Sex */}
-                  <Text style={styles.modalInputLabel}>Biological Sex (Rx Loading baseline):</Text>
-                  <View style={styles.genderRow}>
-                    {(['male', 'female'] as Gender[]).map((g) => (
-                      <TouchableOpacity
-                        key={g}
-                        onPress={() => {
-                          HapticsService.countdownTick();
-                          setNewGender(g);
-                        }}
+                {/* Division Selection */}
+                <Text style={styles.modalInputLabel}>Starting Division:</Text>
+                <View style={styles.genderRow}>
+                  {(['INTERMEDIATE', 'RX', 'COMPETITOR', 'FOUNDATION'] as DivisionTier[]).map((d) => (
+                    <TouchableOpacity
+                      key={d}
+                      onPress={() => {
+                        HapticsService.countdownTick();
+                        setNewDivision(d);
+                      }}
+                      style={[
+                        styles.divisionChip,
+                        newDivision === d && styles.divisionChipActive,
+                      ]}
+                    >
+                      <Text
                         style={[
-                          styles.genderChip,
-                          newGender === g && styles.genderChipActive,
+                          styles.divisionChipText,
+                          newDivision === d && styles.divisionChipTextActive,
                         ]}
                       >
-                        <Text
-                          style={[
-                            styles.genderChipText,
-                            newGender === g && styles.genderChipTextActive,
-                          ]}
-                        >
-                          {g === 'male' ? 'Male (Rx Men)' : 'Female (Rx Women)'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                        {d}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Age, Weight & Height Inputs Row */}
+                <View style={styles.biometricsInputRow}>
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Age:</Text>
+                    <TextInput
+                      value={newAge}
+                      onChangeText={setNewAge}
+                      keyboardType="numeric"
+                      inputMode="numeric"
+                      placeholder="28"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                    />
                   </View>
 
-                  {/* Division Selection */}
-                  <Text style={styles.modalInputLabel}>Starting Division:</Text>
-                  <View style={styles.genderRow}>
-                    {(['INTERMEDIATE', 'RX', 'COMPETITOR', 'FOUNDATION'] as DivisionTier[]).map((d) => (
-                      <TouchableOpacity
-                        key={d}
-                        onPress={() => {
-                          HapticsService.countdownTick();
-                          setNewDivision(d);
-                        }}
-                        style={[
-                          styles.divisionChip,
-                          newDivision === d && styles.divisionChipActive,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.divisionChipText,
-                            newDivision === d && styles.divisionChipTextActive,
-                          ]}
-                        >
-                          {d}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Weight (kg):</Text>
+                    <TextInput
+                      value={newWeight}
+                      onChangeText={setNewWeight}
+                      keyboardType="decimal-pad"
+                      inputMode="decimal"
+                      placeholder="80"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                    />
                   </View>
 
-                  {/* Age, Weight & Height Inputs Row */}
-                  <View style={styles.biometricsInputRow}>
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Age:</Text>
-                      <TextInput
-                        value={newAge}
-                        onChangeText={setNewAge}
-                        keyboardType="numeric"
-                        placeholder="28"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                      />
-                    </View>
-
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Weight (kg):</Text>
-                      <TextInput
-                        value={newWeight}
-                        onChangeText={setNewWeight}
-                        keyboardType="decimal-pad"
-                        placeholder="80"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                      />
-                    </View>
-
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Height (cm):</Text>
-                      <TextInput
-                        value={newHeight}
-                        onChangeText={setNewHeight}
-                        keyboardType="numeric"
-                        placeholder="178"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                      />
-                    </View>
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Height (cm):</Text>
+                    <TextInput
+                      value={newHeight}
+                      onChangeText={setNewHeight}
+                      keyboardType="numeric"
+                      inputMode="numeric"
+                      placeholder="178"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                    />
                   </View>
+                </View>
 
-                  <Button
-                    title="Create & Switch to Athlete"
-                    variant="primary"
-                    size="lg"
-                    onPress={handleCreateNewAthlete}
-                    style={styles.saveModalBtn}
-                  />
-                </ScrollView>
-              </View>
-            </KeyboardAvoidingView>
-          </View>
-        </TouchableWithoutFeedback>
+                <Button
+                  title="Create & Switch to Athlete"
+                  variant="primary"
+                  size="lg"
+                  onPress={handleCreateNewAthlete}
+                  style={styles.saveModalBtn}
+                />
+              </ScrollView>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
 
       {/* ✏️ Edit Athlete Biometrics Modal */}
@@ -712,131 +719,137 @@ export default function ProfileScreen() {
         animationType="slide"
         onRequestClose={() => setShowEditBiometricsModal(false)}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalOverlay}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoidContainer}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
-            >
-              <View style={styles.editModal}>
-                <View style={styles.modalHeader}>
-                  <View>
-                    <Text style={styles.modalTitle}>Edit Athlete Biometrics</Text>
-                    <Text style={styles.modalSubtitle}>Update parameters for {profile.name}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      HapticsService.countdownTick();
-                      setShowEditBiometricsModal(false);
-                    }}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <X size={20} color={COLORS.textSecondary} />
-                  </TouchableOpacity>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardAvoidContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+          >
+            <View style={styles.editModal}>
+              <View style={styles.modalHeader}>
+                <View>
+                  <Text style={styles.modalTitle}>Edit Athlete Biometrics</Text>
+                  <Text style={styles.modalSubtitle}>Update parameters for {profile.name}</Text>
                 </View>
-
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                  bounces={false}
+                <TouchableOpacity
+                  onPress={() => {
+                    HapticsService.countdownTick();
+                    setShowEditBiometricsModal(false);
+                  }}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  {/* Name */}
-                  <Text style={styles.modalInputLabel}>Athlete Name:</Text>
-                  <TextInput
-                    value={editName}
-                    onChangeText={setEditName}
-                    placeholder="e.g. Dima Michaelov"
-                    placeholderTextColor={COLORS.textMuted}
-                    style={styles.modalInput}
-                    returnKeyType="done"
-                    selectTextOnFocus
-                  />
+                  <X size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
+              </View>
 
-                  {/* Gender Toggle */}
-                  <Text style={styles.modalInputLabel}>Biological Sex (for Rx Loading):</Text>
-                  <View style={styles.genderRow}>
-                    {(['male', 'female'] as Gender[]).map((g) => (
-                      <TouchableOpacity
-                        key={g}
-                        onPress={() => {
-                          HapticsService.countdownTick();
-                          setEditGender(g);
-                        }}
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="always"
+                bounces={false}
+              >
+                {/* Name */}
+                <Text style={styles.modalInputLabel}>Athlete Name:</Text>
+                <TextInput
+                  value={editName}
+                  onChangeText={setEditName}
+                  placeholder="e.g. Dima Michaelov"
+                  placeholderTextColor={COLORS.textMuted}
+                  style={styles.modalInput}
+                  inputMode="text"
+                  returnKeyType="done"
+                  selectTextOnFocus
+                />
+
+                {/* Gender Toggle */}
+                <Text style={styles.modalInputLabel}>Biological Sex (for Rx Loading):</Text>
+                <View style={styles.genderRow}>
+                  {(['male', 'female'] as Gender[]).map((g) => (
+                    <TouchableOpacity
+                      key={g}
+                      onPress={() => {
+                        HapticsService.countdownTick();
+                        setEditGender(g);
+                      }}
+                      style={[
+                        styles.genderChip,
+                        editGender === g && styles.genderChipActive,
+                      ]}
+                    >
+                      <Text
                         style={[
-                          styles.genderChip,
-                          editGender === g && styles.genderChipActive,
+                          styles.genderChipText,
+                          editGender === g && styles.genderChipTextActive,
                         ]}
                       >
-                        <Text
-                          style={[
-                            styles.genderChipText,
-                            editGender === g && styles.genderChipTextActive,
-                          ]}
-                        >
-                          {g === 'male' ? 'Male (Rx Men)' : 'Female (Rx Women)'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                        {g === 'male' ? 'Male (Rx Men)' : 'Female (Rx Women)'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Age, Weight & Height Inputs Row */}
+                <View style={styles.biometricsInputRow}>
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Age (Yrs):</Text>
+                    <TextInput
+                      value={editAge}
+                      onChangeText={setEditAge}
+                      keyboardType="numeric"
+                      inputMode="numeric"
+                      placeholder="28"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                      selectTextOnFocus
+                    />
                   </View>
 
-                  {/* Age, Weight & Height Inputs Row */}
-                  <View style={styles.biometricsInputRow}>
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Age (Yrs):</Text>
-                      <TextInput
-                        value={editAge}
-                        onChangeText={setEditAge}
-                        keyboardType="numeric"
-                        placeholder="28"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                        selectTextOnFocus
-                      />
-                    </View>
-
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Weight (kg):</Text>
-                      <TextInput
-                        value={editWeight}
-                        onChangeText={setEditWeight}
-                        keyboardType="decimal-pad"
-                        placeholder="82"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                        selectTextOnFocus
-                      />
-                    </View>
-
-                    <View style={styles.biometricField}>
-                      <Text style={styles.modalInputLabel}>Height (cm):</Text>
-                      <TextInput
-                        value={editHeight}
-                        onChangeText={setEditHeight}
-                        keyboardType="numeric"
-                        placeholder="180"
-                        placeholderTextColor={COLORS.textMuted}
-                        style={styles.modalInput}
-                        returnKeyType="done"
-                        selectTextOnFocus
-                      />
-                    </View>
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Weight (kg):</Text>
+                    <TextInput
+                      value={editWeight}
+                      onChangeText={setEditWeight}
+                      keyboardType="decimal-pad"
+                      inputMode="decimal"
+                      placeholder="82"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                      selectTextOnFocus
+                    />
                   </View>
 
-                  <Button
-                    title="Save Changes"
-                    variant="primary"
-                    size="lg"
-                    onPress={handleSaveBiometrics}
-                    style={styles.saveModalBtn}
-                  />
-                </ScrollView>
-              </View>
-            </KeyboardAvoidingView>
-          </View>
-        </TouchableWithoutFeedback>
+                  <View style={styles.biometricField}>
+                    <Text style={styles.modalInputLabel}>Height (cm):</Text>
+                    <TextInput
+                      value={editHeight}
+                      onChangeText={setEditHeight}
+                      keyboardType="numeric"
+                      inputMode="numeric"
+                      placeholder="180"
+                      placeholderTextColor={COLORS.textMuted}
+                      style={styles.modalInput}
+                      returnKeyType="done"
+                      selectTextOnFocus
+                    />
+                  </View>
+                </View>
+
+                <Button
+                  title="Save Changes"
+                  variant="primary"
+                  size="lg"
+                  onPress={handleSaveBiometrics}
+                  style={styles.saveModalBtn}
+                />
+              </ScrollView>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -1142,6 +1155,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.5,
     shadowRadius: 20,
+    zIndex: 10,
   },
   drawerHeader: {
     flexDirection: 'row',
@@ -1291,6 +1305,7 @@ const styles = StyleSheet.create({
   keyboardAvoidContainer: {
     width: '100%',
     justifyContent: 'flex-end',
+    zIndex: 10,
   },
   editModal: {
     backgroundColor: COLORS.surface,
@@ -1300,6 +1315,7 @@ const styles = StyleSheet.create({
     maxHeight: '90%',
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
+    zIndex: 10,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1334,7 +1350,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     borderWidth: 1,
     borderColor: COLORS.borderDark,
-  },
+    ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}),
+  } as any,
   genderRow: {
     flexDirection: 'row',
     gap: SPACING.sm,
